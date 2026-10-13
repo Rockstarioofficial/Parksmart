@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ParkSmart – Vehicle Parking Management System</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#e8e9ec;--surface:#fff;--text:#16191f;--muted:#5d6573;--border:#d5d8de;--lot:#1b1f27;--lot2:#252a35;--line:#f5b700;--primary:#1f4fd8;--ok:#1f9d63;--danger:#d93b3b;--bike:#2fa8d8;--car:#f5b700;--truck:#e0703a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--surface:#181c24;--text:#eceff4;--muted:#99a2b3;--border:#2a303c;--lot:#10131a;--lot2:#1a1f29;--primary:#6c93ff}}
+:root[data-theme="dark"]{--bg:#0f1218;--surface:#181c24;--text:#eceff4;--muted:#99a2b3;--border:#2a303c;--lot:#10131a;--lot2:#1a1f29;--primary:#6c93ff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Barlow,system-ui,-apple-system,Segoe UI,sans-serif}
+h1,h2,h3,.num{font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 16px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center;font:700 32px "Barlow Condensed",sans-serif;border:3px solid #fff;box-shadow:0 0 0 2px var(--primary)}
+h1{font-size:30px;font-weight:700;line-height:1}
+.sub{color:var(--muted);font-size:13px}
+.tools{display:flex;align-items:center;gap:10px}
+#clock{font:600 22px "Barlow Condensed",sans-serif;text-align:right;line-height:1}
+#clock small{display:block;font:400 12px Barlow,sans-serif;color:var(--muted)}
+.btn{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--primary)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.sm{padding:4px 10px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;border-left:6px solid var(--line)}
+.stat .num{font-size:36px;font-weight:700;line-height:1.05}
+.stat span{color:var(--muted);font-size:13px}
+.stat.ok{border-left-color:var(--ok)}.stat.bl{border-left-color:var(--primary)}.stat.dg{border-left-color:var(--danger)}
+.layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:960px){.layout{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+.card h2{font-size:22px;font-weight:600;margin-bottom:10px}
+form{display:grid;grid-template-columns:1.4fr 1fr auto;gap:10px;align-items:end}
+@media(max-width:620px){form{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+input,select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
+input{text-transform:uppercase}
+.rates{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--muted)}
+.chip{padding:2px 10px;border-radius:99px;border:1px solid var(--border)}
+.lot{background:var(--lot);border-radius:10px;padding:14px;color:#eceff4}
+.lot h2{color:#fff}
+.zone{margin-bottom:14px}
+.zonehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:500}
+.zonehead small{color:#99a2b3}
+.bar{height:5px;border-radius:3px;background:var(--lot2);overflow:hidden;margin-bottom:8px}
+.bar i{display:block;height:100%;background:var(--line);transition:width .4s}
+.bays{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:0}
+.bay{position:relative;height:86px;background:transparent;border:0;border-left:3px solid var(--line);border-right:3px solid var(--line);margin-left:-3px;color:#eceff4;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px}
+.bay:hover{background:var(--lot2)}
+.bay .id{position:absolute;top:4px;left:8px;font:600 13px "Barlow Condensed",sans-serif;color:#99a2b3}
+.bay .ico{font-size:28px;line-height:1}
+.bay .pl{font:600 11px "Barlow Condensed",sans-serif;letter-spacing:.3px}
+.bay.free .ico{opacity:.18;filter:grayscale(1)}
+.bay.free .pl{color:#6f788a;font-weight:500}
+.bay.bike.used{background:rgba(47,168,216,.2)}.bay.car.used{background:rgba(245,183,0,.18)}.bay.truck.used{background:rgba(224,112,58,.22)}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;color:var(--muted);font-weight:500;font-size:12.5px;padding:6px 8px;border-bottom:2px solid var(--border);white-space:nowrap}
+td{padding:9px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.plate{font:700 16px "Barlow Condensed",sans-serif;letter-spacing:.8px;border:2px solid var(--text);border-radius:5px;padding:0 6px;background:var(--surface)}
+.fee{font-weight:600;font-variant-numeric:tabular-nums}
+.empty{padding:22px;text-align:center;color:var(--muted)}
+.search{margin-bottom:10px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--text);color:var(--bg);padding:10px 18px;border-radius:8px;opacity:0;transition:.25s;z-index:30;max-width:90vw;pointer-events:none}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.err{background:var(--danger);color:#fff}
+.modal{position:fixed;inset:0;background:rgba(10,12,18,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal.open{display:flex}
+.sheet{background:var(--surface);border-radius:12px;padding:20px;width:min(420px,100%);border-top:6px solid var(--line)}
+.sheet h3{font-size:26px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--border)}
+.row b{font-weight:600}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin:12px 0}
+.total .num{font-size:40px;font-weight:700}
+.acts{display:flex;gap:10px;justify-content:flex-end}
+.foot{color:var(--muted);font-size:12.5px;text-align:center;padding:8px 0 16px}
+[hidden]{display:none!important}
+details>summary{cursor:pointer;font-weight:600;font-size:16px}.cfg .opts{margin-top:10px}.chk select{width:auto}
+.meter{flex:1 1 120px;max-width:220px;height:8px;border-radius:4px;background:var(--border);overflow:hidden}.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .08s}.meter i.hot{background:var(--line)}
+.gatebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);margin-bottom:10px}
+.plain{text-transform:none}.lerr{color:var(--danger);min-height:22px;font-size:13px;margin:6px 0}
+.adm h3{font-size:18px;margin:16px 0 6px}.adm .opts input,.adm .opts select{flex:1 1 140px;max-width:240px}
+.hr{display:grid;grid-template-columns:48px 1fr 28px;gap:8px;align-items:center;font-size:13px;margin-bottom:4px}.hr .bar{margin:0}
+.head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.head h2{margin:0}
+.pill{font-size:12.5px;padding:3px 10px;border-radius:99px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.pill.ok{color:var(--ok);border-color:var(--ok)}.pill.err{color:var(--danger);border-color:var(--danger)}.pill.warn{color:#b07a00;border-color:#b07a00}.pill.busy{color:var(--primary);border-color:var(--primary)}
+.seg{display:flex;background:var(--bg);border-radius:9px;padding:3px;gap:3px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:7px;cursor:pointer;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.view{position:relative;aspect-ratio:16/9;background:#0b0e13;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.view video{width:100%;height:100%;object-fit:cover;display:block}
+.idle{position:absolute;inset:0;display:grid;place-items:center;color:#99a2b3}.view.on .idle{display:none}
+.guide{position:absolute;left:5%;right:5%;top:28%;bottom:28%}
+.guide i{position:absolute;width:24px;height:24px;border:3px solid var(--line)}
+.guide i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0}.guide i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0}
+.guide i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0}.guide i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0}
+.guide b{position:absolute;left:0;right:0;top:0;height:2px;background:var(--line);box-shadow:0 0 12px var(--line);opacity:0}
+.view.scan .guide b{opacity:1;animation:sweep 1.2s ease-in-out infinite alternate}
+@keyframes sweep{to{top:100%}}
+.opts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:0 0 12px}
+.chk{display:flex;align-items:center;gap:6px;margin:0;font-size:13px;color:var(--text)}
+input[type=checkbox]{width:auto}input[type=file]{text-transform:none}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand"><div class="logo">P</div><div><h1>ParkSmart</h1><div class="sub">Vehicle Parking Management System</div></div></div>
+  <div class="tools"><span class="pill" id="who" hidden></span><button class="btn sm" id="logout" hidden>Sign out</button><div id="clock"></div><button class="btn" id="theme" aria-label="Toggle theme">Theme</button></div>
+</header>
+
+<section class="stats" id="stats" aria-live="polite"></section>
+
+<div class="layout">
+  <div>
+    <div class="card">
+      <div class="head"><h2>Vehicle check-in</h2><span class="pill" id="camStatus" aria-live="polite">Checking camera…</span></div>
+      <div class="seg" role="group" aria-label="Check-in method">
+        <button type="button" data-mode="manual" aria-pressed="true">Manual entry</button>
+        <button type="button" data-mode="camera" id="tabCam" aria-pressed="false">Camera scan</button>
+        <button type="button" data-mode="upload" aria-pressed="false">Upload photo</button>
+      </div>
+      <div id="capture" hidden>
+        <div class="gatebar" id="gate" hidden><div><b class="plate" id="gPlate"></b> <span id="gType"></span><div class="sub" id="gInfo"></div></div>
+          <div class="acts"><select id="gSel" aria-label="Vehicle type" style="width:auto"><option value="car">Car</option><option value="bike">Bike</option><option value="truck">Truck / bus</option></select><button class="btn sm primary" id="gGo" type="button">Park now</button><button class="btn sm" id="gNo" type="button">Cancel</button></div></div>
+        <div id="camBox" hidden>
+          <div class="view" id="frame"><video id="video" playsinline muted></video><div class="guide"><i></i><i></i><i></i><i></i><b></b></div><div class="idle">Camera is off</div></div>
+          <div class="opts"><select id="camSel" aria-label="Camera" style="width:auto;max-width:200px"><option value="">Default camera</option></select><button type="button" class="btn sm" id="camStart">Start camera</button><button type="button" class="btn sm primary" id="camRead">Read plate now</button>
+            <label class="chk"><input type="checkbox" id="auto" checked> Motion capture</label><label class="chk"><input type="checkbox" id="autopark" checked> Auto-entry</label></div>
+          <div class="opts"><div class="meter" title="Motion level"><i id="mtr"></i></div><span class="pill" id="gState">Idle</span></div>
+        </div>
+        <div id="upBox" hidden><label for="file">Photo of the number plate</label><input type="file" id="file" accept="image/*" style="margin-bottom:12px"></div>
+        <div class="opts"><button type="button" class="btn sm" id="demo">Run demo read</button><button type="button" class="btn sm" id="selftest">Test plate reader</button><span class="sub">Fills a sample plate to show the flow.</span></div>
+      </div>
+      <form id="inForm" novalidate>
+        <div><label for="plate">Number plate</label><input id="plate" placeholder="TN30AB1234" maxlength="14" autocomplete="off"></div>
+        <div><label for="type">Vehicle type</label><select id="type"><option value="car">Car</option><option value="bike">Bike</option><option value="truck">Truck / bus</option><option value="auto">Auto-detect (camera)</option></select></div>
+        <button class="btn primary" type="submit">Park vehicle</button>
+      </form>
+      <div class="rates" id="rates"></div>
+    </div>
+    <details class="card cfg"><summary>Gate settings</summary><div class="opts">
+      <label class="chk">Country <select id="cfgCountry"></select></label>
+      <label class="chk">Read distance <select id="cfgNear"><option value="near">Very near</option><option value="normal">Normal</option><option value="far">Far</option></select></label>
+      <label class="chk">Auto delay <select id="cfgDelay"><option value="0" selected>Instant</option><option value="2">2 s</option><option value="3">3 s</option><option value="5">5 s</option></select></label>
+      <label class="chk">If type unknown <select id="cfgType"><option value="car">Car</option><option value="bike">Bike</option><option value="truck">Truck / bus</option></select></label></div>
+      <p class="sub">Only Latin letters and digits can be read. Auto-entry has no confidence threshold: use the delay to cancel wrong reads.</p></details>
+    <details class="card" id="exitCard"><summary>Exit camera <span class="sub">(optional)</span></summary>
+      <p class="sub">A second camera at the exit lane checks parked vehicles out automatically.</p>
+      <div class="head"><span class="pill" id="xcamStatus">Off</span></div>
+      <div class="gatebar" id="xgate" hidden><div><b class="plate" id="xgPlate"></b> <span id="xgType"></span><div class="sub" id="xgInfo"></div></div>
+        <div class="acts"><button class="btn sm primary" id="xgGo" type="button">Exit now</button><button class="btn sm" id="xgNo" type="button">Cancel</button></div></div>
+      <div class="view" id="xframe"><video id="xvideo" playsinline muted></video><div class="guide"><i></i><i></i><i></i><i></i><b></b></div><div class="idle">Camera is off</div></div>
+      <div class="opts"><select id="xcamSel" aria-label="Exit camera" style="width:auto;max-width:200px"><option value="">Default camera</option></select><button type="button" class="btn sm" id="xcamStart">Start exit camera</button><button type="button" class="btn sm primary" id="xcamRead">Read plate now</button>
+        <label class="chk"><input type="checkbox" id="xauto" checked> Motion capture</label><label class="chk"><input type="checkbox" id="xautopark" checked> Auto-exit</label></div>
+      <div class="opts"><div class="meter" title="Motion level"><i id="xmtr"></i></div><span class="pill" id="xgState">Idle</span></div>
+      <div class="sub" id="xlog"></div></details>
+    <div class="lot card" id="lot"></div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Parked now</h2>
+      <input class="search" id="search" placeholder="Search plate or slot" aria-label="Search parked vehicles">
+      <div class="tablewrap"><table><thead><tr><th>Ticket</th><th>Vehicle</th><th>Slot</th><th>In</th><th>Elapsed</th><th>Fee so far</th><th></th></tr></thead><tbody id="active"></tbody></table></div>
+    </div>
+    <div class="card">
+      <h2>Recent exits</h2>
+      <div class="tablewrap"><table><thead><tr><th>Ticket</th><th>Vehicle</th><th>Slot</th><th>Stayed</th><th>Paid</th></tr></thead><tbody id="hist"></tbody></table></div>
+      <div style="margin-top:12px"><button class="btn sm" id="reset">Reset demo data</button></div>
+    </div>
+  </div>
+</div>
+<div class="card adm" id="admin" hidden><div class="head"><h2>Admin console</h2></div>
+<div class="seg" role="group" aria-label="Admin sections"><button type="button" data-adm="reports" aria-pressed="true">Reports</button><button type="button" data-adm="watch" aria-pressed="false">Watchlist</button><button type="button" data-adm="audit" aria-pressed="false">Audit log</button><button type="button" data-adm="users" aria-pressed="false">Staff &amp; backup</button></div>
+<div id="adminBody"></div></div>
+<div class="foot" id="foot">Fees are charged per started hour. Data is stored in this browser.</div>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>
+<div class="modal" id="login" role="dialog" aria-modal="true"><div class="sheet"><h3>Sign in</h3><p class="sub">Staff login for ParkSmart.</p>
+<label for="lu">Username</label><input id="lu" class="plain" autocomplete="username"><label for="lp" style="margin-top:10px">Password</label><input id="lp" type="password" class="plain" autocomplete="current-password">
+<div class="lerr" id="lerr" role="alert"></div><div class="acts"><button class="btn primary" id="lgo">Sign in</button></div></div></div>
+<div id="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

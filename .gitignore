@@ -1,0 +1,6 @@
+config.properties
+.env
+*.p12
+backups/
+target/
+*.log
